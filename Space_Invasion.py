@@ -2,6 +2,46 @@ import pygame
 import random
 import math
 from pygame import mixer
+import io
+
+#Funcion convierte fuente
+def fuente_bytes(fuente):
+    #abrir archivo ttf
+    with open(fuente,'rb') as f:
+        ttf_bytes = f.read()
+    return io.BytesIO(ttf_bytes)
+
+#Funcion fin de juego
+def texto_final():
+    mi_fuente_final = fuente_final.render("GAME OVER", True, (255, 255, 255))
+    pantalla.blit(mi_fuente_final, (200, 200))
+
+#Funcion mostrar puntaje
+def mostrar_puntaje(x, y):
+    texto = fuente.render(f"Puntaje: {puntaje}", True, (255, 255, 255))
+    pantalla.blit(texto, (x, y))
+
+#Funcion de jugador
+def jugador(x, y):
+    pantalla.blit(img_jugador, (x, y))
+
+#Funcion de enemigo
+def enemigo(x, y, ene):
+    pantalla.blit(img_enemigo[ene], (x, y))
+
+#Funcion disparar bala
+def disparar_bala(x, y):
+    global bala_visible
+    bala_visible = True
+    pantalla.blit(img_bala, (x + 16 ,y + 10))
+
+#Funcion detectar coliciones
+def hay_colision(x_1, y_1, x_2, y_2):
+    distacia = math.sqrt(math.pow(x_2 - x_1, 2) + math.pow(y_2 - y_1, 2))
+    if distacia < 27:
+        return True
+    else:
+        return False
 
 #Para iniciar a pygame
 pygame.init()
@@ -23,9 +63,6 @@ pygame.display.set_icon(icono)
 sonido_fondo = mixer.Sound('MusicaFondo.mp3')
 sonido_fondo.set_volume(0.03)
 sonido_fondo.play()
-#mixer.music.load('MusicaFondo.mp3')
-#mixer.music.set_volume(0.2)
-#mixer.music.play(-1)
 
 #Variables del jugador
 img_jugador = pygame.image.load("cohete.png")
@@ -60,52 +97,21 @@ bala_visible = False
 #Puntaje
 puntaje = 0
 #Fuente puntaje
-fuente = pygame.font.Font('comicbd.ttf',32)
+fuente_comicbd_bytes = fuente_bytes("comicbd.ttf")
+fuente = pygame.font.Font(fuente_comicbd_bytes,32)
 texto_x = 10
 texto_y = 10
 
 #Texto fin de juego
-fuente_final = pygame.font.Font('Fastest.ttf',40)
-
-#Funcion fin de juego
-def texto_final():
-    mi_fuente_final = fuente_final.render("GAME OVER", True, (255, 255, 255))
-    pantalla.blit(mi_fuente_final, (200, 200))
-
-#Funcion mostrar puntaje
-def mostrar_puntaje(x, y):
-    texto = fuente.render(f"Puntaje: {puntaje}", True, (255, 255, 255))
-    pantalla.blit(texto, (x, y))
-
-#Funcion de jugador
-def jugador(x, y):
-    pantalla.blit(img_jugador, (x, y))
-
-#Funcion de enemigo
-def enemigo(x, y, ene):
-    pantalla.blit(img_enemigo[ene], (x, y))
-
-#Funcion disparar bala
-def disparar_bala(x, y):
-    global bala_visible
-    bala_visible = True
-    pantalla.blit(img_bala, (x + 16 ,y + 10))
-
-#Funcion detectar coliciones
-def hay_colision(x_1, y_1, x_2, y_2):
-    distacia = math.sqrt(math.pow(x_2 - x_1, 2) + math.pow(y_2 - y_1, 2))
-    if distacia < 27:
-        return True
-    else:
-        return False
+fuente_Fastest_bytes = fuente_bytes("Fastest.ttf")
+fuente_final = pygame.font.Font(fuente_Fastest_bytes,40)
 
 ejecutar = True
 
 #Loop para mantener la pantalla visible
 
 while ejecutar:
-    # color de la pantalla en formato RGB
-    #pantalla.fill ( (63, 91, 87) )
+
     #Fondo de pantalla
     pantalla.blit(fondo, (0, 0))
     # Loop para iterar eventos
